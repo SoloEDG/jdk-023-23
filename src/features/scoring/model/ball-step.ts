@@ -54,6 +54,17 @@ function stepRide(doc: PinballDocument, dtMs: number, sample: (progress: number)
   return []
 }
 
+// 出口在入口那一下锁定：只有右挡板按住、左挡板没按才走右侧，
+// 其余（含两边同时按住、都没按、只按左）都走左侧。骑行途中不再读挡板，
+// 因此半路换挡板、甚至在途中关上闸门，都改不了已经选定的路。
+function chooseRampExit(doc: PinballDocument): 'left' | 'right' {
+  return doc.flippers.right.held && !doc.flippers.left.held ? 'right' : 'left'
+}
+
+function stepRamp(doc: PinballDocument, dtMs: number, rides: RideFns): ContactEvent[] {
+  return stepRide(doc, dtMs, (progress) => rides.ramp(progress, doc.ball.rideExit))
+}
+
 function stepHole(doc: PinballDocument, dtMs: number): ContactEvent[] {
   doc.ball.holdMs -= dtMs
   doc.ball.vx = 0
@@ -83,6 +94,7 @@ function capture(doc: PinballDocument, events: ContactEvent[]): void {
       return
     }
     if (event.id === BodyId.ramp && doc.gates.rampOpen) {
+      doc.ball.rideExit = chooseRampExit(doc)
       beginRide(doc, 'ramp', RAMP_MS)
       return
     }
@@ -113,7 +125,7 @@ function markDrainOrSeat(doc: PinballDocument): void {
 
 export function advanceBall(doc: PinballDocument, solids: Solid[], dtMs: number, rides: RideFns): ContactEvent[] {
   if (doc.ball.held === 'hole') return stepHole(doc, dtMs)
-  if (doc.ball.held === 'ramp') return stepRide(doc, dtMs, rides.ramp)
+  if (doc.ball.held === 'ramp') return stepRamp(doc, dtMs, rides)
   if (doc.ball.held === 'scoop') return stepRide(doc, dtMs, rides.scoop)
   if (doc.ball.held === 'plunger') return []
 

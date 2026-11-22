@@ -12,8 +12,10 @@ export interface RideSample {
   vy: number
 }
 
+export type RampSide = 'left' | 'right'
+
 export interface RideFns {
-  ramp: (progress: number) => RideSample
+  ramp: (progress: number, side: RampSide) => RideSample
   scoop: (progress: number) => RideSample
 }
 

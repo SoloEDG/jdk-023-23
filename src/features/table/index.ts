@@ -3,7 +3,7 @@ import type { Solid } from '@/shared/solids'
 import { collectSolids } from '@/features/table/lib/solids'
 import { publishGates, tickMechanisms } from '@/features/table/model/mechanism-rules'
 
-export { anchors, sampleRamp, sampleScoop, stickPlunger } from '@/features/table/lib/playfield-layout'
+export { anchors, rampPath, sampleRamp, sampleScoop, stickPlunger } from '@/features/table/lib/playfield-layout'
 export { collectSolids } from '@/features/table/lib/solids'
 export {
   consumeContacts,

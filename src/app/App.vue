@@ -51,6 +51,7 @@ function onPlunger(down: boolean): void {
           <TableView :doc="doc" />
           <p class="how">
             A 与左 Shift 是左挡板，D 与右 Shift 是右挡板。按住空格蓄力，松开把球打上发射槽。Q、E 轻推，三次会倾斜。P 暂停。
+            坡道在球进门那一刻看挡板：只按住右挡板走右侧回台面，其余情况（只按左、都不按、两边同按）都走左侧，进门后换挡板不再改道。
           </p>
         </div>
         <aside class="side">

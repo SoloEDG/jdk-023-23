@@ -9,6 +9,7 @@ import {
   lanes,
   plungerSeat,
   rampMouth,
+  rampPath,
   scoopSensor,
   slings,
   spinnerHub,
@@ -135,6 +136,24 @@ function gateOf(ctx: CanvasRenderingContext2D, doc: PinballDocument): void {
   ctx.stroke()
 }
 
+function rampTracks(ctx: CanvasRenderingContext2D, doc: PinballDocument): void {
+  const riding = doc.ball.held === 'ramp'
+  for (const side of ['left', 'right'] as const) {
+    const path = rampPath(side)
+    const chosen = riding && doc.ball.rideExit === side
+    ctx.beginPath()
+    ctx.moveTo(path[0]!.x, path[0]!.y)
+    for (const point of path.slice(1)) ctx.lineTo(point.x, point.y)
+    ctx.lineCap = 'round'
+    ctx.lineJoin = 'round'
+    ctx.strokeStyle = chosen ? 'rgba(255,213,106,0.95)' : doc.gates.rampOpen ? 'rgba(255,246,232,0.3)' : 'rgba(255,246,232,0.12)'
+    ctx.lineWidth = chosen ? 5 : 3
+    ctx.setLineDash(chosen ? [] : [7, 7])
+    ctx.stroke()
+    ctx.setLineDash([])
+  }
+}
+
 function holeOf(ctx: CanvasRenderingContext2D, doc: PinballDocument): void {
   const state = doc.mechanisms.find((item) => item.id === hole.id)
   ctx.beginPath()
@@ -231,6 +250,7 @@ export function paintTable(ctx: CanvasRenderingContext2D, doc: PinballDocument, 
   felt(ctx)
   scoopOf(ctx)
   rails(ctx)
+  rampTracks(ctx, doc)
   lanesOf(ctx, doc)
   dropsOf(ctx, doc)
   slingsOf(ctx)

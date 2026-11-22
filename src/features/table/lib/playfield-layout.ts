@@ -1,4 +1,4 @@
-import type { RideSample } from '@/shared/contacts'
+import type { RideSample, RampSide } from '@/shared/contacts'
 import type { PinballDocument } from '@/shared/document'
 import type { FlipperAnchors, Vec } from '@/shared/geometry'
 import { BodyId } from '@/shared/ids'
@@ -136,19 +136,53 @@ const SCOOP_PATH: Vec[] = [
   { x: 142, y: 138 },
 ]
 
-const RAMP_PATH: Vec[] = [
+// 坡道从入口（304,300）贴着右导轨往上，到顶后一分为二：
+// 左路横过台面顶端，再沿左侧滑到左挡板上方；右路在右侧掉头滑到右挡板上方。
+// 两条路的最后一段都竖直向下，出口点分别在左右挡板中段正上方，
+// 挡板不管在起位还是抬位都够得着。侧别在入口锁存，整段骑行只读这一条路。
+const RAMP_SPLIT: Vec[] = [
   { x: 304, y: 300 },
-  { x: 332, y: 220 },
-  { x: 280, y: 150 },
-  { x: 160, y: 156 },
-  { x: 96, y: 280 },
-  { x: 118, y: 490 },
+  { x: 326, y: 235 },
+  { x: 320, y: 178 },
+  { x: 292, y: 150 },
+]
+
+const RAMP_LEFT: Vec[] = [
+  ...RAMP_SPLIT,
+  { x: 252, y: 118 },
+  { x: 210, y: 112 },
+  { x: 160, y: 112 },
+  { x: 104, y: 128 },
+  { x: 76, y: 170 },
+  { x: 74, y: 220 },
+  { x: 90, y: 290 },
+  { x: 104, y: 396 },
+  { x: 110, y: 470 },
+  { x: 140, y: 524 },
+  { x: 162, y: 548 },
+  { x: 162, y: 560 },
+]
+
+const RAMP_RIGHT: Vec[] = [
+  ...RAMP_SPLIT,
+  { x: 306, y: 190 },
+  { x: 318, y: 280 },
+  { x: 322, y: 370 },
+  { x: 316, y: 430 },
+  { x: 294, y: 480 },
+  { x: 262, y: 522 },
+  { x: 238, y: 548 },
+  { x: 238, y: 560 },
 ]
 
 export function sampleScoop(progress: number): RideSample {
   return follow(SCOOP_PATH, progress, 520)
 }
 
-export function sampleRamp(progress: number): RideSample {
-  return follow(RAMP_PATH, progress, 460)
+export function rampPath(side: RampSide): Vec[] {
+  return side === 'right' ? RAMP_RIGHT : RAMP_LEFT
+}
+
+export function sampleRamp(progress: number, side: RampSide = 'left'): RideSample {
+  return follow(rampPath(side), progress, 460)
 }

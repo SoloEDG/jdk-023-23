@@ -25,6 +25,7 @@ export interface BallState {
   holdMs: number
   rideMs: number
   rideDur: number
+  rideExit: 'left' | 'right'
   idleMs: number
 }
 
@@ -157,6 +158,7 @@ export function createDocument(): PinballDocument {
       holdMs: 0,
       rideMs: 0,
       rideDur: 1,
+      rideExit: 'left',
       idleMs: 0,
     },
     flippers: {

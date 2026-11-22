@@ -15,7 +15,10 @@ function status(item: MechanismState): string {
   if (item.kind === 'bumper') return `灯 ${item.lamp + 1}`
   if (item.kind === 'spinner') return item.spinOmega > 1 ? '在转' : '停着'
   if (item.kind === 'hole') return item.lamp ? '刚吞球' : '空着'
-  if (item.kind === 'ramp') return props.doc.gates.rampOpen ? '可进' : '被闸住'
+  if (item.kind === 'ramp') {
+    if (props.doc.ball.held === 'ramp') return props.doc.ball.rideExit === 'right' ? '出右侧' : '出左侧'
+    return props.doc.gates.rampOpen ? '可进' : '被闸住'
+  }
   return item.cooldownMs > 0 ? '冷却' : '待命'
 }
 
